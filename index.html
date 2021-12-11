@@ -44,16 +44,22 @@
   </br>
 
   <form id="combinations-form" disabled>
-    <input class="combinations-radio" id="combinations-radio-full" type="radio" name="radio-toto-system" value="full" disabled />
+    <input class="combinations-radio" id="combinations-radio-full" type="radio" name="radio-toto-system" value="full" disabled onClick="document.getElementById('full-combinations-numbers-count-container').hidden = false; document.getElementById('partial-combinations-system-number-container').hidden = true; " />
     <label for="full">Пълно комбиниране</label>
 
-    <input class="combinations-radio" id="combinations-radio-partial" type="radio" name="radio-toto-system" value="partial" disabled checked />
+    <input class="combinations-radio" id="combinations-radio-partial" type="radio" name="radio-toto-system" value="partial" disabled checked onClick="document.getElementById('full-combinations-numbers-count-container').hidden = true; document.getElementById('partial-combinations-system-number-container').hidden = false;"/>
     <label for="partial">Непълно комбиниране</label>
     
     </br>
   </form>
-  <label>Въведете номер на системата</label>
-  <input id="number-system" style="width: 250px;" placeholder="" disabled></input>
+  <div id="partial-combinations-system-number-container">
+    <label>Въведете номер на системата</label>
+    <input id="number-system" style="width: 250px;" placeholder="" disabled></input>
+  </div>
+  <div id="full-combinations-numbers-count-container" hidden>
+    <label>Въведете броя на числата за всеки тираж</label>
+    <input id="full-combinations-numbers-count" placeholder="" disabled></input>
+  </div>
   </br>
   </br>
   <hr>
@@ -112,6 +118,11 @@
   </br>
   <label>Резултати</label>
   <div id="display-results"></div>
+  <div id="system-generate-helper">
+    <input id="system-string-input"></input>
+    <button onclick="parseSystem()">Генерирай масив за система</button>
+    <div id="display-system-parsed"></div>
+  </div>
 </div>
 
 <script>
@@ -146,10 +157,15 @@ function enableRandomNumbersFields() {
 }
 
 function changeStateSystemInputFields() {
-  const currentState = document.getElementById('number-system').disabled;
+  const currentState = document.getElementById('combinations-radio-full').disabled;
   document.getElementById('number-system').disabled = !currentState;
+  document.getElementById('full-combinations-numbers-count').disabled = !currentState;
   document.getElementById('combinations-radio-full').disabled = !currentState;
   document.getElementById('combinations-radio-partial').disabled = !currentState;
+  document.getElementById('full-combinations-numbers-count-container').hidden = document.getElementById('combinations-radio-partial').checked;
+  document.getElementById('full-combinations-numbers-count-container').disabled = !currentState;
+  document.getElementById('partial-combinations-system-number-container').hidden = document.getElementById('combinations-radio-full').checked;
+  document.getElementById('partial-combinations-system-number-container').disabled = !currentState;
 }
 
 function removeInputRow(e) {
@@ -842,7 +858,7 @@ function factorialize(num) {
           description: 'description here'
         },
         82: {
-          numbersCount: 1,
+          numbersCount: 11,
           description: 'description here'
         },
         83: {
@@ -1106,17 +1122,14 @@ function factorialize(num) {
   //http://www.toto.bg/toto1-i-toto2/toto-2-5-ot-35/palno-kombinirane-v-toto-2-5-ot-35
   function get535FullCombinations3MatchesWinningsCount(numbersCount){
     return {
-      3: ((numbersCount-3)*(numbersCount-4))/2,
-      4: 0,
-      5: 0
+      3: ((numbersCount-3)*(numbersCount-4))/2
     };
   }
   
   function get535FullCombinations4MatchesWinningsCount(numbersCount){
     return {
       3: 4*(((numbersCount-4)*(numbersCount-5))/2),
-      4: numbersCount-4,
-      5: 0
+      4: numbersCount-4
     };
   }
   
@@ -1131,19 +1144,14 @@ function factorialize(num) {
   //http://www.toto.bg/toto1-i-toto2/toto-2-6-ot-42/palno-kombinirane-v-toto-2-6-ot-42
   function get642FullCombinations3MatchesWinningsCount(numbersCount){
     return {
-      3: ((numbersCount-3)*(numbersCount-4)*(numbersCount-5))/6,
-      4: 0,
-      5: 0,
-      6: 0
+      3: ((numbersCount-3)*(numbersCount-4)*(numbersCount-5))/6
     };
   }
   
   function get642FullCombinations4MatchesWinningsCount(numbersCount){
     return {
       3: 2*(((numbersCount-4)*(numbersCount-5)*(numbersCount-6))/6),
-      4: ((numbersCount-4)*(numbersCount-5))/2,
-      5: 0,
-      6: 0
+      4: ((numbersCount-4)*(numbersCount-5))/2
     };
   }
   
@@ -1151,8 +1159,7 @@ function factorialize(num) {
     return {
       3: 10*(((numbersCount-5)*(numbersCount-6)*(numbersCount-7))/6),
       4: 5*(((numbersCount-5)*(numbersCount-6))/2),
-      5: numbersCount-5,
-      6: 0
+      5: numbersCount-5
     };
   }
   
@@ -1269,7 +1276,7 @@ function factorialize(num) {
     return draws;
   }
   
-  function getResults(input, draw, cost){
+  function getResults(input, draw, cost, isFullCombination, gameType){
     
     let result = {
         numbersHit:{},
@@ -1316,7 +1323,13 @@ function factorialize(num) {
     
     for(let i = 0; i < draw.length; i++){
       let drawSet = draw[i];
-      let resultForInputSet = getResultForInputSet(input, drawSet);
+      let resultForInputSet = null;
+
+      if(isFullCombination){
+        resultForInputSet = getResultForInputSetFullCombinations(input, drawSet, gameType)
+      }else{
+        resultForInputSet = getResultForInputSet(input, drawSet);
+      } 
       //не работи - не се вижда нищо визуално освен ако не се спре с дебъгр, тогава се вижда html-a
       //document.getElementById("display-results").innerHTML = 'Резултатите се генерират...' + parseInt((i/input.length)*100) + '%';
       
@@ -1470,25 +1483,53 @@ function factorialize(num) {
           if(!result[resultForDrawSet.toString()]){
               result[resultForDrawSet.toString()] = 0;
           }
-              //console.log('========');
-              //console.log('Input');
-              //console.log(input);
-              //console.log('drawSet');
-              //console.log(drawSet);
-              //console.log('========');
           result[resultForDrawSet.toString()]++;
           if(resultForDrawSet > 6){
               console.log('========');
               console.log('Input');
               console.log(inputNumbers);
               console.log('drawSet');
-              console.log(drawSet);
+              console.log(draw);
               console.log('========');
           }
       }
     }
     
     return result;
+  }
+  
+  function getResultForInputSetFullCombinations(inputNumbers, draw, gameType){
+    let result = {};
+    const minimumForWinResult = 2;
+    
+    for(let i = 0; i < inputNumbers.length; i++){
+      let inputNumbersSubSet = inputNumbers[i];
+      let matchesForDrawSet = getResultForDrawSet(inputNumbersSubSet, draw);
+      
+      if(matchesForDrawSet > minimumForWinResult){
+        
+        const winnings = getWinningsForFullCombination(matchesForDrawSet, gameType, inputNumbersSubSet.length);
+        for(var match in winnings){
+          if(!result[match.toString()]){
+            result[match.toString()] = 0;
+          }
+          result[match.toString()] += winnings[match];
+          if(matchesForDrawSet > 6){
+              console.log('========');
+              console.log('Input');
+              console.log(inputNumbers);
+              console.log('drawSet');
+              console.log(draw);
+              console.log('========');
+          }
+        }
+      }
+    }
+    return result;
+  }
+  
+  function getWinningsForFullCombination(matches, gameType, numbersCount){
+    return systems[gameType].getFullCombinationsMatchesPerGroup[matches](numbersCount);
   }
   
   function getResultForDrawSet(inputNumbers, draw){
@@ -1531,6 +1572,7 @@ function factorialize(num) {
       let systemNumberId = parseInt($('#number-system').val());
       let systemDefinitions = isSystemSelected && getSystemDefinitions(gameType, systemType, systemNumberId);
       let manualUserInputValidLength = isSystemSelected ? systemDefinitions.numbersCount : numbersPerSingleDraw;
+      let fullCombinationNumbersCount = parseInt($('#full-combinations-numbers-count').val());
       
       let hasManualInputNumbers = Boolean($("input[type='radio'][id='radio-numbers-user-input']:checked").val());
       let allManualInputNumbers = [...document.getElementsByClassName('numbers-user-input')]
@@ -1639,7 +1681,7 @@ function factorialize(num) {
         }
       }
       
-      if(isSystemSelected && hasToGenerateRandomTickets){
+      if(isSystemSelected && systemType === 'partial' && hasToGenerateRandomTickets){
         
         let systemRandomNumbersPerSimulation = [];
         let systemCombinations = getPartialSystemCombinations(gameType, systemNumberId);
@@ -1672,7 +1714,7 @@ function factorialize(num) {
           }
         }
       }
-      else if(isSystemSelected){
+      else if(isSystemSelected && systemType === 'partial'){
         let systemCombinations = getPartialSystemCombinations(gameType, systemNumberId);
         for(let i = 0; i < allManualInputNumbers.length; i++){
           const numbersInput = allManualInputNumbers[i];
@@ -1683,9 +1725,9 @@ function factorialize(num) {
           }
         }
       }else if(randomTicketsCount){
+        const singleCombinationLength = isSystemSelected && fullCombinationNumbersCount ? fullCombinationNumbersCount : numbersPerSingleDraw;
         if(hasToGenerateControlledRandomNumbers){
         
-          const singleCombinationLength = numbersPerSingleDraw;
           let generatedCombinationsCount = 0;
           
           while(generatedCombinationsCount < randomTicketsCount){
@@ -1700,7 +1742,7 @@ function factorialize(num) {
             allUserCombinationsPerSimulation = [...allUserCombinationsPerSimulation, ...nonRepeatableValuesTable];
           }
         }else{
-          allUserCombinationsPerSimulation = getAllDraws(randomTicketsCount, numbersPerSingleDraw, numbersMaxRange, permanentNumbers);
+          allUserCombinationsPerSimulation = getAllDraws(randomTicketsCount, singleCombinationLength, numbersMaxRange, permanentNumbers);
         }
       }else{
         for(let j = 0; j < allManualInputNumbers.length; j++){
@@ -1711,12 +1753,13 @@ function factorialize(num) {
       
         //console.log('allUserCombinationsPerSimulation');
         //console.log(allUserCombinationsPerSimulation);
-      let totalCost = singleGameCost * allUserCombinationsPerSimulation.length; 
+      const costMultiplier = (isSystemSelected && systemType === 'full') ? systems.getFullCombinationsCount(numbersPerSingleDraw, fullCombinationNumbersCount) : allUserCombinationsPerSimulation.length;
+      let totalCost = singleGameCost * costMultiplier; 
       //console.log('single cost ' + singleGameCost + ' total cost ' + totalCost);
       
       document.getElementById("display-results").innerHTML = 'Резултатите се генерират...'
       //console.log(allSimulatedDraws);
-      results = getResults(allUserCombinationsPerSimulation, allSimulatedDraws, totalCost);
+      results = getResults(allUserCombinationsPerSimulation, allSimulatedDraws, totalCost, (isSystemSelected && systemType === 'full'), gameType);
       
       let x, txt = "";
       txt = '<p>Цена за 1 тираж: ' + Math.round(totalCost*100)/100 + ' лв. </p>';
@@ -1870,21 +1913,10 @@ function factorialize(num) {
     }catch(error){
       document.getElementById("display-results").innerHTML = 'Грешка!!!';
     }
-  
-
+    
     //TODO
-    
-    //- random generated numbers for systems should be based on systems info (how many numbers are required for a system)
-    //- clear logic for generating based on different input combinations-form and add comments
-    //- add systems with permanet numbers
-    // add all combinations systems
-    
-    
-    
-    //inputs
-    //22 - 2,4,5,11,12,14,15,18,29,21,22,23,24,27,29,30,31,34,35,37,40,41
-    //10 6/49 - 4,7,15,22,27,29,33,42,46,19
-    //10 6/42 - 4,7,15,22,27,29,33,42,41,19
+    // - full matches display winnings groups is not correct
+  
   }
 </script>
 
