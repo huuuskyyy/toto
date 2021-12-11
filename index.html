@@ -1753,7 +1753,7 @@ function factorialize(num) {
       
         //console.log('allUserCombinationsPerSimulation');
         //console.log(allUserCombinationsPerSimulation);
-      const costMultiplier = (isSystemSelected && systemType === 'full') ? systems.getFullCombinationsCount(numbersPerSingleDraw, fullCombinationNumbersCount) : allUserCombinationsPerSimulation.length;
+      const costMultiplier = (isSystemSelected && systemType === 'full') ? systems.getFullCombinationsCount(numbersPerSingleDraw, fullCombinationNumbersCount) * allUserCombinationsPerSimulation.length : allUserCombinationsPerSimulation.length;
       let totalCost = singleGameCost * costMultiplier; 
       //console.log('single cost ' + singleGameCost + ' total cost ' + totalCost);
       
