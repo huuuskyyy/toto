@@ -1732,7 +1732,7 @@ function factorialize(num) {
       let results = {};
       let allUserCombinationsPerSimulation = [];
       let randomNumbers = [];
-      const isFullyPartialSystem = isSystemSelected && systemType === 'partial' && systemDefinitions.partiallyFull;
+      const isFullyPartialSystem = isSystemSelected && systemType === 'partial' && systemDefinitions.partiallyFull === true;
       
       function drawNonRepeatableRowsColsTable(minValue, maxValue){
         let currentValue = getRandomInteger(minValue, maxValue);
