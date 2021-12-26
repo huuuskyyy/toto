@@ -52,9 +52,7 @@
     }
 
     tr:nth-child(even){background-color: #f2f2f2;}
-
     tr:hover {background-color: #ddd;}
-
   </style>
 </head>
 
@@ -65,13 +63,13 @@
   </br>
   <label>Изберете вид игра</label>
   <form id="game-type-form">
-    <input type="radio" name="radio-toto-game" value="649" checked/>
+    <input type="radio" name="radio-toto-game" value="649" onClick="gameTypeChanged()" checked/>
     <label for="649">6/49</label>
 
-    <input type="radio" name="radio-toto-game" value="642"/>
+    <input type="radio" name="radio-toto-game" value="642" onClick="gameTypeChanged()"/>
     <label for="642">6/42</label>
 
-    <input type="radio" name="radio-toto-game" value="535"/>
+    <input type="radio" name="radio-toto-game" value="535" onClick="gameTypeChanged()"/>
     <label for="535">5/35</label>
     
     <p>Цените за колонка са фиксирани на 5/35 0.80 лв, 6/42 0.85 лв, 6/49 1.10 лв. Въведете друга цена за колонка, ако желаете</p>
@@ -100,8 +98,10 @@
     </br>
   </form>
   <div id="partial-combinations-system-number-container">
-    <label>Въведете номер на системата</label>
-    <input id="number-system" style="width: 250px;" placeholder="" disabled></input>
+    <label>Изберете система</label>
+    <select name="systems" id="systems-list" disabled>
+      <option>Номер 1 - 8 числа, 4 комбинации (3 от 3)</option>
+    </select>
   </div>
   <div id="full-combinations-numbers-count-container" hidden>
     <label>Въведете броя на числата за всеки тираж</label>
@@ -165,7 +165,7 @@
   </br>
   <h2>Резултати</h2>
   <div id="display-results"></div>
-  <div id="system-generate-helper">
+  <div id="system-generate-helper" hidden>
     <input id="system-string-input"></input>
     <button onclick="parseSystem()">Генерирай масив за система</button>
     <div id="display-system-parsed"></div>
@@ -201,18 +201,6 @@ function enableRandomNumbersFields() {
   [...document.getElementsByClassName('numbers-user-input')].forEach(element => element.disabled = true);
   [...document.getElementsByClassName('add-input-row')].forEach(element => element.disabled = true);
   [...document.getElementsByClassName('remove-input-row')].forEach(element => element.disabled = true);
-}
-
-function changeStateSystemInputFields() {
-  const currentState = document.getElementById('combinations-radio-full').disabled;
-  document.getElementById('number-system').disabled = !currentState;
-  document.getElementById('full-combinations-numbers-count').disabled = !currentState;
-  document.getElementById('combinations-radio-full').disabled = !currentState;
-  document.getElementById('combinations-radio-partial').disabled = !currentState;
-  document.getElementById('full-combinations-numbers-count-container').hidden = document.getElementById('combinations-radio-partial').checked;
-  document.getElementById('full-combinations-numbers-count-container').disabled = !currentState;
-  document.getElementById('partial-combinations-system-number-container').hidden = document.getElementById('combinations-radio-full').checked;
-  document.getElementById('partial-combinations-system-number-container').disabled = !currentState;
 }
 
 function removeInputRow(e) {
@@ -553,7 +541,7 @@ function factorialize(num) {
         },
         16: {
           numbersCount: 5,
-          description: '5 твърди числа 155 комбинации (3 от 2, 4 от 3, 5 от 4)',
+          description: '5 твърди числа, 155 комбинации (3 от 2, 4 от 3, 5 от 4)',
           partiallyFull: true,
           combinationsCount: 155,
           winningsPerMatches: {
@@ -577,7 +565,7 @@ function factorialize(num) {
         },
         17: {
           numbersCount: 6,
-          description: '6 твърди числа  465 комбинации (3 от 2, 4 от 3, 5 от 4)',
+          description: '6 твърди числа, 465 комбинации (3 от 2, 4 от 3, 5 от 4)',
           partiallyFull: true,
           combinationsCount: 465,
           winningsPerMatches: {
@@ -627,43 +615,43 @@ function factorialize(num) {
         },
         19: {
           numbersCount: 7,
-          description: '7 числа ( 2 твърди + 5) 10 комбинации (3 от 3)'
+          description: '7 числа (2 твърди + 5) 10 комбинации (3 от 3)'
         },
         20: {
           numbersCount: 8,
-          description: '8 числа ( 2 твърди + 6) 20 комбинации (3 от 3)'
+          description: '8 числа (2 твърди + 6) 20 комбинации (3 от 3)'
         },
         21: {
           numbersCount: 9,
-          description: '9 числа ( 2 твърди + 7) 35 комбинации (3 от 3)'
+          description: '9 числа (2 твърди + 7) 35 комбинации (3 от 3)'
         },
         22: {
           numbersCount: 10,
-          description: '10 числа ( 2 твърди + 8) 56 комбинации (3 от 3)'
+          description: '10 числа (2 твърди + 8) 56 комбинации (3 от 3)'
         },
         23: {
           numbersCount: 11,
-          description: '11 числа ( 2 твърди + 9) 84 комбинации (3 от 3)'
+          description: '11 числа (2 твърди + 9) 84 комбинации (3 от 3)'
         },
         24: {
           numbersCount: 12,
-          description: '12 числа ( 2 твърди + 10) 120 комбинации (3 от 3)'
+          description: '12 числа (2 твърди + 10) 120 комбинации (3 от 3)'
         },
         25: {
           numbersCount: 9,
-          description: '9 числа ( 3 твърди + 6) 15 комбинации (3 от 3)'
+          description: '9 числа (3 твърди + 6) 15 комбинации (3 от 3)'
         },
         26: {
           numbersCount: 10,
-          description: '10 числа ( 3 твърди + 7) 21 комбинации (3 от 3)'
+          description: '10 числа (3 твърди + 7) 21 комбинации (3 от 3)'
         },
         27: {
           numbersCount: 11,
-          description: '11 числа ( 3 твърди + 8) 28 комбинации (3 от 3)'
+          description: '11 числа (3 твърди + 8) 28 комбинации (3 от 3)'
         },
         28: {
           numbersCount: 12,
-          description: '12 числа ( 3 твърди + 9) 36 комбинации (3 от 3)'
+          description: '12 числа (3 твърди + 9) 36 комбинации (3 от 3)'
         },
         29: {
           numbersCount: 3,
@@ -693,577 +681,600 @@ function factorialize(num) {
     642: {
         1: {
           numbersCount: 8,
-          description: 'description here'
+          description: '8 числа, 4 комбинации (3 от 3)'
         },
         2: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа, 7 комбинации (3 от 3, 5 от 6)'
         },
         3: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 10 комбинации (3 от 3, 4 от 5)'
         },
         4: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа, 11 комбинации (3 от 3, 4 от 6)'
         },
         5: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 15 комбинации (3 от 3, 4 от 6)'
         },
         6: {
           numbersCount: 13,
-          description: 'description here'
+          description: '13 числа, 22 комбинации (3 от 3, 4 от 6)'
         },
         7: {
           numbersCount: 14,
-          description: 'description here'
+          description: '14 числа, 25 комбинации (3 от 3, 4 от 6)'
         },
         8: {
           numbersCount: 15,
-          description: 'description here'
+          description: '15 числа, 31 комбинации (3 от 3, 4 от 6)'
         },
         9: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа, 48 комбинации (3 от 3, 4 от 6)'
         },
         10: {
           numbersCount: 22,
-          description: 'description here'
+          description: '22 числа, 77 комбинации (3 от 3)'
         },
         11: {
           numbersCount: 23,
-          description: 'description here'
+          description: '23 числа, 104 комбинации (3 от 3)'
         },
         12: {
           numbersCount: 24,
-          description: 'description here'
+          description: '24 числа, 119 комбинации (3 от 3)'
         },
         13: {
           numbersCount: 25,
-          description: 'description here'
+          description: '25 числа, 153 комбинации (3 от 3)'
         },
         14: {
           numbersCount: 30,
-          description: 'description here'
+          description: '30 числа, 237 комбинации (3 от 3)'
         },
         15: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа, 3 комбинации (3 от 4, 4 от 5)'
         },
         16: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 4 комбинации (3 от 4, 4 от 6)'
         },
         17: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 6 комбинации (3 от 4)'
         },
         18: {
           numbersCount: 13,
-          description: 'description here'
+          description: '13 числа, 9 комбинации (3 от 4)'
         },
         19: {
           numbersCount: 14,
-          description: 'description here'
+          description: '14 числа, 12 комбинации (3 от 4)'
         },
         20: {
           numbersCount: 15,
-          description: 'description here'
+          description: '15 числа, 15 комбинации (3 от 4)'
         },
         21: {
           numbersCount: 16,
-          description: 'description here'
+          description: '16 числа, 19 комбинации (3 от 4)'
         },
         22: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа, 27 комбинации (3 от 4)'
         },
         23: {
           numbersCount: 24,
-          description: 'description here'
+          description: '24 числа, 72 комбинации (3 от 4)'
         },
         24: {
           numbersCount: 14,
-          description: 'description here'
+          description: '14 числа, 5 комбинации (3 от 5)'
         },
         25: {
           numbersCount: 16,
-          description: 'description here'
+          description: '16 числа, 8 комбинации (3 от 5)'
         },
         26: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа, 12 комбинации (3 от 5)'
         },
         27: {
           numbersCount: 19,
-          description: 'description here'
+          description: '19 числа, 15 комбинации (3 от 5)'
         },
         28: {
           numbersCount: 20,
-          description: 'description here'
+          description: '20 числа, 18 комбинации (3 от 5)'
         },
         29: {
           numbersCount: 21,
-          description: 'description here'
+          description: '21 числа, 21 комбинации (3 от 5)'
         },
         30: {
           numbersCount: 22,
-          description: 'description here'
+          description: '22 числа, 22 комбинации (3 от 5)'
         },
         31: {
           numbersCount: 23,
-          description: 'description here'
+          description: '23 числа, 26 комбинации (3 от 5)'
         },
         32: {
           numbersCount: 24,
-          description: 'description here'
+          description: '24 числа, 30 комбинации (3 от 5)'
         },
         33: {
           numbersCount: 25,
-          description: 'description here'
+          description: '25 числа, 36 комбинации (3 от 5)'
         },
         34: {
           numbersCount: 26,
-          description: 'description here'
+          description: '26 числа, 40 комбинации (3 от 5)'
         },
         35: {
           numbersCount: 27,
-          description: 'description here'
+          description: '27 числа, 46 комбинации (3 от 5)'
         },
         36: {
           numbersCount: 28,
-          description: 'description here'
+          description: '28 числа, 50 комбинации (3 от 5)'
         },
         37: {
           numbersCount: 29,
-          description: 'description here'
+          description: '29 числа, 56 комбинации (3 от 5)'
         },
         38: {
           numbersCount: 30,
-          description: 'description here'
+          description: '30 числа, 62 комбинации (3 от 5)'
         },
         39: {
           numbersCount: 32,
-          description: 'description here'
+          description: '32 числа, 73 комбинации (3 от 5)'
         },
         40: {
           numbersCount: 36,
-          description: 'description here'
+          description: '36 числа, 96 комбинации (3 от 5)'
         },
         41: {
           numbersCount: 40,
-          description: 'description here'
+          description: '40 числа, 125 комбинации (3 от 5)'
         },
         43: {
           numbersCount: 15,
-          description: 'description here'
+          description: '15 числа, 4 комбинации (3 от 6)'
         },
         44: {
           numbersCount: 16,
-          description: 'description here'
+          description: '16 числа, 5 комбинации (3 от 6)'
         },
         45: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа, 7 комбинации (3 от 6)'
         },
         46: {
           numbersCount: 20,
-          description: 'description here'
+          description: '20 числа, 10 комбинации (3 от 6)'
         },
         47: {
           numbersCount: 22,
-          description: 'description here'
+          description: '22 числа, 16 комбинации (3 от 6)'
         },
         48: {
           numbersCount: 24,
-          description: 'description here'
+          description: '24 числа, 20 комбинации (3 от 6)'
         },
         49: {
           numbersCount: 26,
-          description: 'description here'
+          description: '26 числа, 26 комбинации (3 от 6)'
         },
         50: {
           numbersCount: 28,
-          description: 'description here'
+          description: '28 числа, 34 комбинации (3 от 6)'
         },
         51: {
           numbersCount: 30,
-          description: 'description here'
+          description: '30 числа, 42 комбинации (3 от 6)'
         },
         52: {
           numbersCount: 32,
-          description: 'description here'
+          description: '32 числа, 52 комбинации (3 от 6)'
         },
         54: {
           numbersCount: 7,
-          description: 'description here'
+          description: '7 числа, 5 комбинации (4 от 4, 5 от 6)'
         },
         55: {
           numbersCount: 8,
-          description: 'description here'
+          description: '8 числа, 7 комбинации (4 от 4, 5 от 6)'
         },
         56: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа, 12 комбинации (4 от 4, 5 от 6)'
         },
         57: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 20 комбинации (4 от 4, 5 от 6)'
         },
         58: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 42 комбинации (3 от 3, 4 от 4, 5 от 6)'
         },
         59: {
           numbersCount: 14,
-          description: 'description here'
+          description: '14 числа, 99 комбинации (4 от 4)'
         },
         60: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа, 258 комбинации (4 от 4)'
         },
         61: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа, 3 комбинации (3 от 4, 4 от 5)'
         },
         62: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 7 комбинации (3 от 4, 4 от 5)'
         },
         63: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа, 12 комбинации (3 от 4, 4 от 5)'
         },
         64: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 18 комбинации (3 от 4, 4 от 5)'
         },
         65: {
           numbersCount: 13,
-          description: 'description here'
+          description: '13 числа, 28 комбинации (3 от 4, 4 от 5)'
         },
         66: {
           numbersCount: 14,
-          description: 'description here'
+          description: '14 числа, 40 комбинации (3 от 4, 4 от 5)'
         },
         67: {
           numbersCount: 15,
-          description: 'description here'
+          description: '15 числа, 46 комбинации (3 от 3, 4 от 5)'
         },
         68: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 3 комбинации (3 от 5, 4 от 6)'
         },
         69: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа, 5 комбинации (3 от 5, 4 от 6)'
         },
         70: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 6 комбинации (3 от 5, 4 от 6)'
         },
         71: {
           numbersCount: 13,
-          description: 'description here'
+          description: '13 числа, 12 комбинации (3 от 5, 4 от 6)'
         },
         72: {
           numbersCount: 14,
-          description: 'description here'
+          description: '14 числа, 15 комбинации (3 от 4, 4 от 6)'
         },
         73: {
           numbersCount: 15,
-          description: 'description here'
+          description: '15 числа, 22 комбинации (3 от 5, 4 от 6)'
         },
         74: {
           numbersCount: 16,
-          description: 'description here'
+          description: '16 числа, 38 комбинации (3 от 5, 4 от 6)'
         },
         75: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа, 42 комбинации (3 от 4, 4 от 6)'
         },
         76: {
           numbersCount: 20,
-          description: 'description here'
+          description: '20 числа, 100 комбинации (3 от 5, 4 от 6)'
         },
         77: {
           numbersCount: 24,
-          description: 'description here'
+          description: '24 числа, 169 комбинации (3 от 3, 4 от 6)'
         },
         78: {
           numbersCount: 7,
-          description: 'description here'
+          description: '7 числа, 6 комбинации (3 от 3, 4 от 4, 5 от 5)'
         },
         79: {
           numbersCount: 8,
-          description: 'description here'
+          description: '8 числа, 12 комбинации (3 от 3, 4 от 4, 5 от 5)'
         },
         80: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа, 30 комбинации (3 от 3, 4 от 4, 5 от 5)'
         },
         81: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 50 комбинации (3 от 3, 4 от 4, 5 от 5)'
         },
         82: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа, 101 комбинации (3 от 3, 4 от 4, 5 от 5)'
         },
         83: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 132 комбинации (3 от 3, 4 от 4, 5 от 5)'
         },
         84: {
           numbersCount: 13,
-          description: 'description here'
+          description: '13 числа, 245 комбинации (3 от 3, 4 от 4, 5 от 5)'
         },
         85: {
           numbersCount: 8,
-          description: 'description here'
+          description: '8 числа, 4 комбинации (3 от 3, 4 от 5, 5 от 6)'
         },
         86: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа, 7 комбинации (3 от 4, 4 от 5, 5 от 6)'
         },
         87: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 16 комбинации (3 от 3, 4 от 5, 5 от 6)'
         },
         88: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 28 комбинации (3 от 3, 4 от 4, 5 от 6)'
         },
         89: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа, 26 комбинации (3 от 4, 4 от 5, 5 от 6)'
         },
         90: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 42 комбинации (3 от 3, 4 от 4, 5 от 6)'
         },
         91: {
           numbersCount: 14,
-          description: 'description here'
+          description: '14 числа, 174 комбинации (3 от 3, 4 от 5, 5 от 6)'
         },
         92: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа (1 твърдо + 11) 66 комбинации (3 от 3, 4 от 4)'
         },
         93: {
           numbersCount: 13,
-          description: 'description here'
+          description: '13 числа (1 твърдо + 12) 6 комбинации (3 от 5)'
         },
         94: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа (1 твърдо + 17) 68 комбинации (3 от 3)'
         },
         95: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа (2 твърди + 8) 8 комбинации (3 от 4)'
         },
         96: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа (2 твърди + 10) 30 комбинации (3 от 3, 4 от 6)'
         },
         97: {
           numbersCount: 15,
-          description: 'description here'
+          description: '15 числа (2 твърди + 13) 13 комбинации (3 от 3)'
         },
         98: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа (2 твърди + 16) 20 комбинации (3 от 3)'
         },
         99: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа (2 твърди + 16) 140 комбинации (3 от 3)'
         },
         100: {
           numbersCount: 22,
-          description: 'description here'
+          description: '22 числа (2 твърди + 20) 285 комбинации (3 от 3)'
         },
         101: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 22 комбинации (3 от 3, 4 от 5)'
         },
         102: {
           numbersCount: 0,
-          description: 'description here'
+          description: 'Съществува под друг номер, този е оставен, за да запази последователността'
         },
         103: {
           numbersCount: 16,
-          description: 'description here'
+          description: '16 числа, 38 комбинации (3 от 3)'
         },
         104: {
           numbersCount: 26,
-          description: 'description here'
+          description: '26 числа, 130 комбинации (3 от 3)'
         },
         105: {
           numbersCount: 20,
-          description: 'description here'
+          description: '20 числа, 39 комбинации (3 от 4)'
         },
         106: {
           numbersCount: 22,
-          description: 'description here'
+          description: '22 числа, 54 комбинации (3 от 5)'
         },
         107: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 30 комбинации (3 от 3, 4 от 4, 5 от 6)'
         },
         108: {
           numbersCount: 15,
-          description: 'description here'
+          description: '15 числа, 130 комбинации (3 от 3, 4 от 4)'
         },
         109: {
           numbersCount: 16,
-          description: 'description here'
+          description: '16 числа, 162 комбинации (3 от 3, 4 от 4)'
         },
         110: {
           numbersCount: 22,
-          description: 'description here'
+          description: '22 числа (1 твърди + 21) 21 комбинации (3 от 3)'
         },
         111: {
           numbersCount: 26,
-          description: 'description here'
+          description: '26 числа (1 твърди + 25) 30 комбинации'
         },
         112: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа (2 твърди + 8) 14 комбинации (3 от 3, 4 от 5)'
         },
         113: {
           numbersCount: 27,
-          description: 'description here'
+          description: '27 числа (2 твърди + 25) 50 комбинации'
         },
         114: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа (3 твърди + 9) 12 комбинации (3 от 5)'
         },
         115: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа (3 твърди + 15) 19 комбинации'
         },
         116: {
           numbersCount: 24,
-          description: 'description here'
+          description: '24 числа (3 твърди + 21) 70 комбинации'
         },
         117: {
           numbersCount: 28,
-          description: 'description here'
+          description: '28 числа (3 твърди + 25) 100 комбинации'
         },
         118: {
           numbersCount: 30,
-          description: 'description here'
+          description: '30 числа, 131 комбинации (3 от 5)'
         },
         119: {
           numbersCount: 16,
-          description: 'description here'
+          description: '16 числа, 71 комбинации'
         },
         120: {
-          numbersCount: 20,
-          description: 'description here'
+          numbersCount: 22,
+          description: '22 числа, 225 комбинации'
         },
         121: {
           numbersCount: 18,
-          description: 'description here'
+          description: '18 числа, 144 комбинации (3 от 5)'
         },
         122: {
           numbersCount: 24,
-          description: 'description here'
+          description: '24 числа, 70 комбинации (3 от 5)'
         },
         123: {
           numbersCount: 24,
-          description: 'description here'
+          description: '24 числа, 256 комбинации'
         },
         124: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа, 9 комбинации (3 от 4, 4 от 5)'
         },
         125: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа, 66 комбинации (3 от 3, 4 от 4, 5 от 6)'
         },
         126: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа, 16 комбинации (3 от 3, 4 от 5)'
         },
         127: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 18 комбинации (3 от 3, 4 от 5)'
         },
         128: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа (1 твърдо + 8) 8 комбинации (3 от 3, 4 от 5)'
         },
         129: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа (1 твърдо + 9) 12 комбинации (3 от 3, 4 от 5)'
         },
         130: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа (1 твърдо + 10) 18 комбинации (3 от 3, 4 от 5)'
         },
         131: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа (1 твърдо + 11) 21 комбинации (3 от 3)'
         },
         132: {
           numbersCount: 8,
-          description: 'description here'
+          description: '8 числа (2 твърди + 6) 6 комбинации (3 от 3, 4 от 5)'
         },
         133: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа (2 твърди + 7) 12 комбинации (3 от 3, 4 от 5)'
         },
         134: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа (3 твърди + 7) 7 комбинации (3 от 5)'
         },
         135: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа 10 комбинации (3 от 3, 4 от 5)'
         },
         136: {
           numbersCount: 9,
-          description: 'description here'
+          description: '9 числа, 6 комбинации (3 от 4, 4 от 5)'
         },
         137: {
           numbersCount: 10,
-          description: 'description here'
+          description: '10 числа, 5 комбинации (3 от 3, 4 от 6)'
         },
         138: {
           numbersCount: 14,
-          description: 'description here'
+          description: '14 числа, 7 комбинации (3 от 5)'
+        },
+        139: {
+          numbersCount: 5,
+          description: '5 твърди числа, които се комбинират с останалите и включва 37 комбинации (3 от 2, 4 от 3, 5 от 4, 6 от 5)',
+          partiallyFull: true,
+          combinationsCount: 37,
+          winningsPerMatches: {
+            2: {
+              3: 4
+            },
+            3: {
+              3: 34,
+              4: 3
+            },
+            4: {
+              4: 35,
+              5: 2
+            },
+            5: {
+              5: 36,
+              6: 1
+            }
+          }
         },
         140: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 32 комбинации (3 от 5)'
         },
         141: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 28 комбинации (3 от 5)'
         },
         142: {
           numbersCount: 12,
-          description: 'description here'
+          description: '12 числа, 10 комбинации (3 от 4, 4 от 6)'
         },
         143: {
           numbersCount: 11,
-          description: 'description here'
+          description: '11 числа, 22 комбинации (3 от 3, 4 от 5, 5 от 6)'
         }
     },
     649: {
         42: {
           numbersCount: 44,
-          description: 'description here'
+          description: '44 числа, 154 комбинации (3 от 5)'
         },
         53: {
           numbersCount: 49,
-          description: 'description here'
+          description: '49 числа, 175 комбинации (3 от 6)'
         },
         139: {
           numbersCount: 5,
-          description: 'description here',
+          description: '5 твърди числа, които се комбинират с останалите и включва 44 комбинации (3 от 2, 4 от 3, 5 от 4, 6 от 5)',
           partiallyFull: true,
           combinationsCount: 44,
           winningsPerMatches: {
@@ -1280,7 +1291,7 @@ function factorialize(num) {
             },
             5: {
               5: 43,
-              6: 6
+              6: 1
             }
           }
         }
@@ -1390,6 +1401,44 @@ function factorialize(num) {
       definitions = systems[gameType].partialDefinitions[systemId] || {};
     }
     return definitions;
+  }
+  
+  function setSystemsSelectOptions(){
+    //call the function when you change the selected type of system and when the option for selecting system is checked
+    const gameType = parseInt($('input[name=radio-toto-game]:checked', '#game-type-form').val());
+    const gameTypeSystemDefinitions = systems[gameType].partialDefinitions;
+    
+    const documentFragment = document.createDocumentFragment();
+    
+    $("#systems-list").empty();
+    for(var defId in gameTypeSystemDefinitions){
+      const currentDef = gameTypeSystemDefinitions[defId];
+      const option = document.createElement('option');
+      option.value = defId;
+      option.innerHTML = 'Номер ' + defId + ' - ' + currentDef.description;
+      
+      documentFragment.appendChild(option);
+    }
+    
+    document.getElementById('systems-list').appendChild(documentFragment);
+  }
+  
+  function changeStateSystemInputFields() {
+    const currentState = document.getElementById('combinations-radio-full').disabled;
+    document.getElementById('full-combinations-numbers-count').disabled = !currentState;
+    document.getElementById('systems-list').disabled = !currentState;
+    document.getElementById('combinations-radio-full').disabled = !currentState;
+    document.getElementById('combinations-radio-partial').disabled = !currentState;
+    document.getElementById('full-combinations-numbers-count-container').hidden = document.getElementById('combinations-radio-partial').checked;
+    document.getElementById('full-combinations-numbers-count-container').disabled = !currentState;
+    document.getElementById('partial-combinations-system-number-container').hidden = document.getElementById('combinations-radio-full').checked;
+    document.getElementById('partial-combinations-system-number-container').disabled = !currentState;
+    
+    setSystemsSelectOptions();
+  }
+  
+  function gameTypeChanged() {
+    setSystemsSelectOptions();
   }
   
   function getRandomInteger(min, max) {
@@ -1814,7 +1863,7 @@ function factorialize(num) {
     
       let isSystemSelected = $('#is-system').prop('checked');
       let systemType = $("input[type='radio'][name='radio-toto-system']:checked").val();
-      let systemNumberId = parseInt($('#number-system').val());
+      let systemNumberId = parseInt(document.getElementById("systems-list").value);
       let systemDefinitions = isSystemSelected && getSystemDefinitions(gameType, systemType, systemNumberId);
       let manualUserInputValidLength = isSystemSelected ? systemDefinitions.numbersCount : numbersPerSingleDraw;
       let fullCombinationNumbersCount = isSystemSelected && systemType === 'full' && parseInt($('#full-combinations-numbers-count').val());
