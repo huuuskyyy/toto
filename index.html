@@ -2075,7 +2075,8 @@ function factorialize(num) {
       }
       results = getResults(allUserCombinationsPerSimulation, allSimulatedDraws, totalCost, gameType, getWinnings);
       
-      const winningsTable = getWinningsTable(results.winningsPerDraw);
+      //const winningsTable = getWinningsTable(results.winningsPerDraw);
+      const winningsTable = '<p></p>';
       
       let x, txt = "";
       txt = '<p>Цена за 1 тираж: ' + Math.round(totalCost*100)/100 + ' лв. </p>';
